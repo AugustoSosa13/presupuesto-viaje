@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Plata Brasil</title>
+
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0b0f1a" />
+
+  <style>
+    :root { --bg:#0b0f1a; --card:#141b2d; --text:#e8ecff; --muted:#a9b3d6; --accent:#56d364; --danger:#ff6b6b; }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial; }
+    body { margin:0; background:var(--bg); color:var(--text); padding:16px; }
+    h1 { margin:0 0 10px; font-size:26px; }
+    .sub { color:var(--muted); margin-bottom:16px; }
+    .grid { display:grid; grid-template-columns: 1fr; gap:12px; }
+    .card { background:var(--card); border-radius:14px; padding:14px; box-shadow: 0 10px 20px rgba(0,0,0,.25); }
+    .label { color:var(--muted); font-size:13px; }
+    .value { font-size:26px; font-weight:700; margin-top:6px; }
+    .value.ok { color: var(--accent); }
+    .row { display:flex; gap:10px; flex-wrap: wrap; }
+    input, select, button {
+      width:100%; padding:12px; border-radius:12px; border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04); color:var(--text); outline:none;
+    }
+    button { background: rgba(86,211,100,.15); border: 1px solid rgba(86,211,100,.35); font-weight:700; }
+    button:active { transform: scale(.99); }
+    .btnDanger { background: rgba(255,107,107,.15); border: 1px solid rgba(255,107,107,.35); }
+    .small { font-size:12px; color:var(--muted); margin-top:6px; }
+    .list { display:flex; flex-direction:column; gap:10px; }
+    .item { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+    .item strong { display:block; }
+    .pill { font-size:12px; padding:4px 8px; border-radius:999px; background: rgba(255,255,255,.07); color: var(--muted); display:inline-block; margin-top:6px; }
+    .right { text-align:right; }
+    .mono { font-variant-numeric: tabular-nums; }
+    .divider { height:1px; background: rgba(255,255,255,.08); margin:12px 0; }
+  </style>
+</head>
+
+<body>
+  <h1>Plata Brasil 🇧🇷</h1>
+  <div class="sub">Presupuesto dinámico: si gastás menos, sube tu tope diario.</div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">Máximo recomendado por día (se recalcula solo)</div>
+      <div id="maxPerDay" class="value ok mono">—</div>
+      <div class="small" id="daysLeft">—</div>
+    </div>
+
+    <div class="row">
+      <div class="card" style="flex:1">
+        <div class="label">Presupuesto restante</div>
+        <div id="remaining" class="value mono">—</div>
+      </div>
+      <div class="card" style="flex:1">
+        <div class="label">Gastado total</div>
+        <div id="spentTotal" class="value mono">—</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="label">Setup rápido</div>
+      <div class="row" style="margin-top:10px">
+        <input id="totalBudget" type="number" step="0.01" placeholder="Presupuesto total (BRL) ej: 2950" />
+        <input id="totalDays" type="number" step="1" placeholder="Cantidad de días ej: 9" />
+        <input id="reserved" type="number" step="0.01" placeholder="Reservado (opcional) ej: Uber ida/vuelta" />
+        <input id="tripStart" type="date" />
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button onclick="saveConfig()">Guardar setup</button>
+        <button class="btnDanger" onclick="resetAll()">Resetear todo</button>
+      </div>
+      <div class="small">Tip: poné la fecha real en la que empieza tu viaje.</div>
+    </div>
+
+    <div class="card">
+      <div class="label">Agregar gasto</div>
+      <div class="row" style="margin-top:10px">
+        <input id="amount" type="number" step="0.01" placeholder="Monto (BRL) ej: 45.90" />
+        <select id="category">
+          <option>Comida</option>
+          <option>Uber</option>
+          <option>Joda</option>
+          <option>Compras</option>
+          <option>Otros</option>
+        </select>
+        <input id="note" type="text" placeholder="Nota (opcional)" />
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button onclick="addExpense()">Guardar gasto</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="label">Gastos cargados</div>
+      <div class="divider"></div>
+      <div id="list" class="list"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
